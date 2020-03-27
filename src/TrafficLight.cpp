@@ -52,18 +52,32 @@ void TrafficLight::simulate()
 started in a thread when the public method „simulate“ is called. To do this, use
 the thread queue in the base class.
 }
+*/
 
 // virtual function which is executed in a thread
-void TrafficLight::cycleThroughPhases()
-{
-    // FP.2a : Implement the function with an infinite loop that measures the
-time between two loop cycles
-    // and toggles the current phase of the traffic light between red and green
-and sends an update method
-    // to the message queue using move semantics. The cycle duration should be a
-random value between 4 and 6 seconds.
-    // Also, the while-loop should use std::this_thread::sleep_for to wait 1ms
-between two cycles.
-}
+void TrafficLight::cycleThroughPhases() {
+  // FP.2a : Implement the function with an infinite loop that measures the time
+  // between two loop cycles and toggles the current phase of the traffic light
+  // between red and green and sends an update method to the message queue using
+  // move semantics. The cycle duration should be a random value between 4 and 6
+  // seconds. Also, the while-loop should use std::this_thread::sleep_for to
+  // wait 1ms between two cycles.
+  auto curr_time = std::chrono::steady_clock::now();
+  auto prev_time = curr_time;
 
-*/
+  while (1) {
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
+
+    curr_time = std::chrono::steady_clock::now();
+    if (std::chrono::duration_cast<std::chrono::seconds>(curr_time - prev_time)
+            .count() > (rand() % 2 + 4)) {
+              
+      if (_currentPhase = TrafficLightPhase::red)
+        _currentPhase = TrafficLightPhase::green;
+      else
+        _currentPhase = TrafficLightPhase::red;
+
+      prev_time = std::chrono::steady_clock::now();
+    }
+  }
+}

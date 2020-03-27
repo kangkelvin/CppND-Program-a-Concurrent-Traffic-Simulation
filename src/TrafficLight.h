@@ -6,6 +6,7 @@
 #include <condition_variable>
 #include <deque>
 #include <mutex>
+#include <thread>
 
 // forward declarations to avoid include cycle
 class Vehicle;
@@ -33,8 +34,8 @@ private:
 class TrafficLight : public TrafficObject {
 public:
   enum TrafficLightPhase {
-    red = 1,
-    green = -1,
+    red,
+    green,
   };
 
   // constructor / desctructor
