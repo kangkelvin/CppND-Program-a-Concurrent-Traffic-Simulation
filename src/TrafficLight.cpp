@@ -45,14 +45,13 @@ TrafficLightPhase TrafficLight::getCurrentPhase()
 {
     return _currentPhase;
 }
-
-void TrafficLight::simulate()
-{
-    // FP.2b : Finally, the private method „cycleThroughPhases“ should be
-started in a thread when the public method „simulate“ is called. To do this, use
-the thread queue in the base class.
-}
 */
+void TrafficLight::simulate() {
+  // FP.2b : Finally, the private method „cycleThroughPhases“ should be started
+  // in a thread when the public method „simulate“ is called. To do this, use
+  // the thread queue in the base class.
+  threads.emplace_back(std::thread(&TrafficLight::cycleThroughPhases, this));
+}
 
 // virtual function which is executed in a thread
 void TrafficLight::cycleThroughPhases() {
@@ -71,11 +70,20 @@ void TrafficLight::cycleThroughPhases() {
     curr_time = std::chrono::steady_clock::now();
     if (std::chrono::duration_cast<std::chrono::seconds>(curr_time - prev_time)
             .count() > (rand() % 2 + 4)) {
-              
-      if (_currentPhase = TrafficLightPhase::red)
+
+      if (_currentPhase = TrafficLightPhase::red) {
         _currentPhase = TrafficLightPhase::green;
-      else
+        std::cout << "changed to green\n";
+      } else {
         _currentPhase = TrafficLightPhase::red;
+        std::cout << "changed to red\n";
+      }
+
+      std::cout << "waited for"
+                << std::chrono::duration_cast<std::chrono::seconds>(curr_time -
+                                                                    prev_time)
+                       .count()
+                << std::endl;
 
       prev_time = std::chrono::steady_clock::now();
     }
