@@ -2,6 +2,7 @@
 #define TRAFFICLIGHT_H
 
 #include "TrafficObject.h"
+#include <chrono>
 #include <condition_variable>
 #include <deque>
 #include <mutex>
@@ -31,16 +32,16 @@ private:
 
 class TrafficLight : public TrafficObject {
 public:
+  enum TrafficLightPhase {
+    red = 1,
+    green = -1,
+  };
+
   // constructor / desctructor
-  TrafficLight();
+  TrafficLight(): _currentPhase(TrafficLightPhase::red) {};
   ~TrafficLight();
 
   // getters / setters
-  enum TrafficLightPhase {
-    red,
-    green,
-  };
-
   TrafficLightPhase getCurrentPhase() { return _currentPhase; }
 
   // typical behaviour methods
