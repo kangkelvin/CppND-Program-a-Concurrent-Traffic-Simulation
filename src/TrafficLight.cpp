@@ -9,7 +9,7 @@ template <typename T> T MessageQueue<T>::receive() {
   // _condition.wait() to wait for and receive new messages and pull them from
   // the queue using move semantics. The received object should then be returned
   // by the receive function.
-  std::lock_guard<std::mutex> u_lock(_mutex);
+  std::unique_lock<std::mutex> u_lock(_mutex);
   _condition.wait(u_lock, [this] { return !_queue.empty(); });
 
   T msg = std::move(_queue.back());
@@ -34,11 +34,12 @@ void TrafficLight::waitForGreen() {
   // infinite while-loop runs and repeatedly calls the receive function on the
   // message queue. Once it receives TrafficLightPhase::green, the method
   // returns.
-  while(1) {
+  while (1) {
     std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
     TrafficLightPhase msg = _traffic_light_queue.receive();
-    if (msg == TrafficLightPhase::green) return;
+    if (msg == TrafficLightPhase::green)
+      return;
   }
 }
 
@@ -59,15 +60,16 @@ void TrafficLight::cycleThroughPhases() {
   // wait 1ms between two cycles.
   auto curr_time = std::chrono::steady_clock::now();
   auto prev_time = curr_time;
+  int64_t time_delay = rand() % 2 + 4;
 
   while (1) {
     std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
     curr_time = std::chrono::steady_clock::now();
     if (std::chrono::duration_cast<std::chrono::seconds>(curr_time - prev_time)
-            .count() > (rand() % 2 + 4)) {
+            .count() > time_delay) {
 
-      if (_currentPhase = TrafficLightPhase::red) {
+      if (_currentPhase == TrafficLightPhase::red) {
         _currentPhase = TrafficLightPhase::green;
         std::cout << "changed to green\n";
       } else {
@@ -77,13 +79,8 @@ void TrafficLight::cycleThroughPhases() {
 
       _traffic_light_queue.send(std::move(_currentPhase));
 
-      std::cout << "waited for"
-                << std::chrono::duration_cast<std::chrono::seconds>(curr_time -
-                                                                    prev_time)
-                       .count()
-                << std::endl;
-
       prev_time = std::chrono::steady_clock::now();
+      time_delay = rand() % 2 + 4;
     }
   }
 }

@@ -20,8 +20,8 @@ class Vehicle;
 
 template <class T> class MessageQueue {
 public:
-  MessageQueue();
-  ~MessageQueue();
+  MessageQueue() {};
+  ~MessageQueue() {};
 
   void send(T &&msg);
   T receive();
@@ -50,7 +50,7 @@ public:
 
   // constructor / desctructor
   TrafficLight() : _currentPhase(TrafficLightPhase::red){};
-  ~TrafficLight();
+  ~TrafficLight() {};
 
   // getters / setters
   TrafficLightPhase getCurrentPhase() { return _currentPhase; }
