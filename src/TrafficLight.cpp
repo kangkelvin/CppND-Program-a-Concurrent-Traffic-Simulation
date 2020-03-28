@@ -14,7 +14,7 @@ template <typename T> T MessageQueue<T>::receive() {
 
   T msg = std::move(_queue.back());
   _queue.pop_front();
-  
+
   return msg;
 }
 
@@ -29,21 +29,19 @@ template <typename T> void MessageQueue<T>::send(T &&msg) {
 
 /* Implementation of class "TrafficLight" */
 
-/*
+void TrafficLight::waitForGreen() {
+  // FP.5b : add the implementation of the method waitForGreen, in which an
+  // infinite while-loop runs and repeatedly calls the receive function on the
+  // message queue. Once it receives TrafficLightPhase::green, the method
+  // returns.
+  while(1) {
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
-void TrafficLight::waitForGreen()
-{
-    // FP.5b : add the implementation of the method waitForGreen, in which an
-infinite while-loop
-    // runs and repeatedly calls the receive function on the message queue.
-    // Once it receives TrafficLightPhase::green, the method returns.
+    TrafficLightPhase msg = _traffic_light_queue.receive();
+    if (msg == TrafficLightPhase::green) return;
+  }
 }
 
-TrafficLightPhase TrafficLight::getCurrentPhase()
-{
-    return _currentPhase;
-}
-*/
 void TrafficLight::simulate() {
   // FP.2b : Finally, the private method „cycleThroughPhases“ should be started
   // in a thread when the public method „simulate“ is called. To do this, use
@@ -77,7 +75,7 @@ void TrafficLight::cycleThroughPhases() {
         std::cout << "changed to red\n";
       }
 
-      traffic_light_queue_.send(std::move(_currentPhase));
+      _traffic_light_queue.send(std::move(_currentPhase));
 
       std::cout << "waited for"
                 << std::chrono::duration_cast<std::chrono::seconds>(curr_time -
