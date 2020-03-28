@@ -75,6 +75,8 @@ void TrafficLight::cycleThroughPhases() {
         std::cout << "changed to red\n";
       }
 
+      traffic_light_queue_.send(std::move(_currentPhase));
+
       std::cout << "waited for"
                 << std::chrono::duration_cast<std::chrono::seconds>(curr_time -
                                                                     prev_time)

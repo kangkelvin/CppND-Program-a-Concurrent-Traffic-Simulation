@@ -49,7 +49,7 @@ public:
   };
 
   // constructor / desctructor
-  TrafficLight(): _currentPhase(TrafficLightPhase::red) {};
+  TrafficLight() : _currentPhase(TrafficLightPhase::red){};
   ~TrafficLight();
 
   // getters / setters
@@ -69,6 +69,7 @@ private:
   // TrafficLightPhase and use it within the infinite loop to push each new
   // TrafficLightPhase into it by calling send in conjunction with move
   // semantics.
+  MessageQueue<TrafficLightPhase> traffic_light_queue_;
 
   std::condition_variable _condition;
   std::mutex _mutex;
